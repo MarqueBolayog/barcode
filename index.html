@@ -50,6 +50,7 @@
     textarea {
       height: 100px;
       resize: vertical;
+      font-family: Arial, sans-serif;
     }
 
     button {
@@ -60,6 +61,13 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     #barcode {
@@ -106,7 +114,10 @@
       <textarea id="manualNote" placeholder="Zusätzlicher Text / Beschreibung"></textarea>
     </div>
 
-    <button onclick="window.print()">Drucken</button>
+    <div class="button-group">
+      <button onclick="window.print()">Drucken</button>
+      <button onclick="copyBarcode()">Barcode kopieren</button>
+    </div>
   </main>
 
   <script>
@@ -132,6 +143,21 @@
       } catch (e) {
         svg.innerHTML = "";
       }
+    }
+
+    function copyBarcode() {
+      const svg = document.getElementById("barcode");
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svg);
+
+      const blob = new Blob([svgString], { type: "image/svg+xml" });
+      const item = new ClipboardItem({ "image/svg+xml": blob });
+
+      navigator.clipboard.write([item]).then(() => {
+        alert("Barcode wurde in die Zwischenablage kopiert!");
+      }).catch(err => {
+        alert("Kopieren fehlgeschlagen: " + err);
+      });
     }
   </script>
 
