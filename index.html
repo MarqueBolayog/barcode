@@ -12,7 +12,7 @@
     }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: var(--ci-light);
+      background: white;
       color: var(--ci-blue);
       margin: 0;
       padding: 0;
@@ -32,7 +32,7 @@
       align-items: center;
       gap: 20px;
     }
-    input, textarea {
+    input {
       width: 80%;
       max-width: 400px;
       padding: 12px;
@@ -42,6 +42,13 @@
       color: var(--ci-blue);
     }
     textarea {
+      width: 80%;
+      max-width: 400px;
+      padding: 12px;
+      font-size: 18px;
+      border: 2px solid var(--ci-blue);
+      border-radius: 8px;
+      color: var(--ci-blue);
       height: 100px;
       resize: vertical;
     }
@@ -63,33 +70,31 @@
     
     .barcode-container {
       display: inline-block;
-      border: 4px solid #000000;
-      padding: 30px 40px;
+      border: 3px solid #000000;
+      padding: 25px 35px;
       background: white;
       text-align: center;
     }
     
     #barcode {
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     
     .address-block {
       font-family: Arial, sans-serif;
-      font-size: 18px;
-      line-height: 1.5;
+      font-size: 17px;
+      line-height: 1.4;
       color: #000000;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 5px;
     }
     
     .address-block div {
-      margin: 3px 0;
+      margin: 2px 0;
     }
     
     .manual-note {
       margin-top: 30px;
-      width: 80%;
-      max-width: 500px;
     }
     
     @media print {
@@ -103,16 +108,15 @@
       
       #printSection {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        top: 100px;
+        left: 100px;
         padding: 0;
         background: white;
       }
       
       .barcode-container {
         page-break-inside: avoid;
-        border: 4px solid #000000;
+        border: 3px solid #000000;
       }
     }
     
@@ -168,13 +172,13 @@
         JsBarcode("#barcode", input, {
           format: "CODE128",
           displayValue: true,
-          fontSize: 20,
+          fontSize: 18,
           lineColor: "#000",
-          width: 2,
-          height: 80,
+          width: 2.5,
+          height: 70,
           margin: 0,
-          marginTop: 10,
-          marginBottom: 10
+          marginTop: 5,
+          marginBottom: 5
         });
       } catch (e) {
         svg.innerHTML = "";
