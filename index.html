@@ -10,7 +10,6 @@
       --ci-blue: #003366;
       --ci-light: #e9f1f9;
     }
-
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--ci-light);
@@ -19,16 +18,13 @@
       padding: 0;
       text-align: center;
     }
-
     header {
       background-color: var(--ci-blue);
       padding: 20px;
     }
-
     header img {
       max-height: 80px;
     }
-
     main {
       padding: 40px 20px;
       display: flex;
@@ -36,7 +32,6 @@
       align-items: center;
       gap: 20px;
     }
-
     input, textarea {
       width: 80%;
       max-width: 400px;
@@ -46,12 +41,10 @@
       border-radius: 8px;
       color: var(--ci-blue);
     }
-
     textarea {
       height: 100px;
       resize: vertical;
     }
-
     button {
       padding: 10px 20px;
       font-size: 16px;
@@ -61,79 +54,143 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
-    #barcode {
+    
+    #printSection {
+      background: white;
+      padding: 40px;
       margin-top: 20px;
-      background-color: white;
-      padding: 10px;
-      border: 1px solid #ccc;
     }
-
+    
+    .barcode-container {
+      display: inline-block;
+      border: 3px solid black;
+      padding: 30px 40px;
+      background: white;
+      text-align: center;
+    }
+    
+    #barcode {
+      margin-bottom: 15px;
+    }
+    
+    .address-block {
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+      color: black;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    
+    .address-block div {
+      margin: 3px 0;
+    }
+    
+    .manual-note {
+      margin-top: 30px;
+      width: 80%;
+      max-width: 500px;
+    }
+    
     @media print {
-      body * {
-        visibility: hidden;
+      body {
+        background: white;
       }
-
-      #printSection, #printSection * {
-        visibility: visible;
+      
+      header, main > h1, main > p, main > input, main > button, .manual-note {
+        display: none !important;
       }
-
+      
       #printSection {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 20px;
-        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
       }
+      
+      .barcode-container {
+        page-break-inside: avoid;
+      }
+    }
+    
+    @page {
+      margin: 2cm;
     }
   </style>
 </head>
 <body>
-
   <header>
     <img src="https://github.com/nse-f/barcode/blob/main/logo-nse.svg" alt="Night Star Express Logo">
   </header>
-
   <main>
     <h1>Barcode Generator Night Star Express Frankfurt</h1>
-    <p>Gib deinen Barcode-Text ein:</p>
-
-    <input type="text" id="barcodeInput" placeholder="z.B. hfdpofäpo+ßo12" oninput="generateBarcode()" />
-
+    <p>Gib deinen Barcode-Text und die Adresse ein:</p>
+    <input type="text" id="barcodeInput" placeholder="z.B. 116319_MDXKGE_SD" oninput="generateBarcode()" />
+    
+    <input type="text" id="nameInput" placeholder="Name (z.B. Stefan Eimer)" oninput="updateAddress()" />
+    <input type="text" id="companyInput" placeholder="Firma (z.B. Löwen Techniker)" oninput="updateAddress()" />
+    <input type="text" id="streetInput" placeholder="Straße (z.B. Bodenheimerstr. 12)" oninput="updateAddress()" />
+    <input type="text" id="cityInput" placeholder="PLZ Ort (z.B. DE-55129 Mainz)" oninput="updateAddress()" />
+    
     <div id="printSection">
-      <svg id="barcode"></svg>
-      <textarea id="manualNote" placeholder="Zusätzlicher Text / Beschreibung"></textarea>
+      <div class="barcode-container">
+        <svg id="barcode"></svg>
+        <div class="address-block" id="addressBlock">
+          <div id="nameOutput">Stefan Eimer</div>
+          <div id="companyOutput">Löwen Techniker</div>
+          <div id="streetOutput">Bodenheimerstr. 12</div>
+          <div id="cityOutput">DE-55129 Mainz</div>
+        </div>
+      </div>
     </div>
-
+    
+    <textarea class="manual-note" id="manualNote" placeholder="Zusätzliche Notizen (nur für Bildschirmanzeige)"></textarea>
     <button onclick="window.print()">Drucken</button>
   </main>
-
   <script>
+    // Initialen Barcode generieren
+    window.onload = function() {
+      document.getElementById("barcodeInput").value = "116319_MDXKGE_SD";
+      generateBarcode();
+    };
+    
     function generateBarcode() {
       const input = document.getElementById("barcodeInput").value;
       const svg = document.getElementById("barcode");
-
       if (input.trim() === "") {
         svg.innerHTML = "";
         return;
       }
-
       try {
         JsBarcode("#barcode", input, {
           format: "CODE128",
           displayValue: true,
-          fontSize: 18,
+          fontSize: 20,
           lineColor: "#000",
           width: 2,
-          height: 100,
-          margin: 10
+          height: 80,
+          margin: 0,
+          marginTop: 10,
+          marginBottom: 10
         });
       } catch (e) {
         svg.innerHTML = "";
+        console.error("Barcode-Fehler:", e);
       }
     }
+    
+    function updateAddress() {
+      const name = document.getElementById("nameInput").value || "Stefan Eimer";
+      const company = document.getElementById("companyInput").value || "Löwen Techniker";
+      const street = document.getElementById("streetInput").value || "Bodenheimerstr. 12";
+      const city = document.getElementById("cityInput").value || "DE-55129 Mainz";
+      
+      document.getElementById("nameOutput").textContent = name;
+      document.getElementById("companyOutput").textContent = company;
+      document.getElementById("streetOutput").textContent = street;
+      document.getElementById("cityOutput").textContent = city;
+    }
   </script>
-
 </body>
 </html>
